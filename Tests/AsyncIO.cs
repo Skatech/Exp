@@ -11,13 +11,17 @@ namespace Tests.AsyncIO
   {
     static async Task TestAsync()
     {
-      using (var fs = new FileStream("Tests.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.None, 1024, FileOptions.Asynchronous))
+      using (var fs = new FileStream("Tests.txt", FileMode.Create, FileAccess.Write, FileShare.None, 1024, FileOptions.Asynchronous))
       {
         var data = Encoding.UTF8.GetBytes("Hello, World!\r\n");
         for (int i = 0; i < 100; i++)
+        {
           await fs.WriteAsync(data, 0, data.Length);
+        }
+      }
 
-        fs.Position = 0;
+      using (var fs = new FileStream("Tests.txt", FileMode.Open, FileAccess.Read, FileShare.None, 1024, FileOptions.Asynchronous))
+      {
         var buff = new byte[1024];
         while (true)
         {
